@@ -3,6 +3,7 @@ using Deforestation.Inventory;
 using Deforestation.Machine;
 using Deforestation.Machine.Weapon;
 using Deforestation.UI;
+using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
 namespace Deforestation
@@ -24,7 +25,6 @@ namespace Deforestation
 
         #region Fields
         [Header("Player")]
-
         [SerializeField] private CharacterController _playerCharacterController;
         [SerializeField] private HealthSystem _playerHealth;
         [SerializeField] private GameObject _playerCamera;
@@ -37,6 +37,7 @@ namespace Deforestation
         [SerializeField] private HealthSystem _machineHealth;
         [SerializeField] private GameObject _machineCamera;
         [SerializeField] private WeaponController _weaponController;
+        [SerializeField] private Transform _exitPosition;
 
         [Header("Terrain")]
         [SerializeField] private TerrainManager _terrainManager;
@@ -74,22 +75,39 @@ namespace Deforestation
 
         public void MachineMode(bool machine)
         {
-            Machine = machine;
-            MachineCamera.gameObject.SetActive(machine);
-
-            _playerCharacterController.gameObject.SetActive(!machine);
-            _playerCamera.gameObject.SetActive(!machine);
-
-            _machineController.StartDriving(machine);
-
-            if (machine)
+            if(!machine)
             {
+                _playerCharacterController.gameObject.transform.position = _exitPosition.position;
+                StartCoroutine(MachineWindDown());
+            }
+            else if (machine)
+            {
+                Machine = true;
+                MachineCamera.gameObject.SetActive(true);
+
+                _playerCharacterController.gameObject.SetActive(false);
+                _playerCamera.gameObject.SetActive(false);
+
+                _machineController.StartDriving(true);
                 _uiGameController.HideInteraction();
             }
         }
         #endregion
 
         #region Private Methods
+        private IEnumerator MachineWindDown()
+        {
+            yield return new WaitForSeconds(6.5f);
+
+            Machine = false;
+            MachineCamera.gameObject.SetActive(false);
+
+            _playerCharacterController.gameObject.SetActive(true);
+            _playerCamera.gameObject.SetActive(true);
+
+            _machineController.StartDriving(false);
+            _uiGameController.HideInteraction();
+        }
         #endregion
     }
 }

@@ -37,7 +37,7 @@ namespace Deforestation.Machine
 		[System.Obsolete]
         void Update()
         {
-            if (Input.GetKeyUp(KeyCode.Escape) && IsDriving)
+            if (Input.GetKeyUp(KeyCode.Escape))
             {
                 StopDriving();
             _isDriving = false;

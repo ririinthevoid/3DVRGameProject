@@ -9,15 +9,22 @@ namespace Deforestation.Machine.Weapon
         #endregion
 
         #region Fields
+        [Header("Turret")]
         [SerializeField] private Transform _turretTransform;
     	[SerializeField] private Transform _spawnPoinLeft;
     	[SerializeField] private Transform _spawnPoinRight;
     	[SerializeField] private float  _rotationSpd;
 
+        [Header("Shot")]
         [SerializeField] private Bullet _bulletPrefab;
         [SerializeField] private GameObject _smokeRight;
         [SerializeField] private GameObject _smokeLeft;
         [SerializeField] private int  _shootSide; //0 = left : 1 = right
+
+        [Header("Ammo Managing")]
+        [SerializeField] private int _maxAmmo;
+        [SerializeField] private int _currentAmmo;
+        [SerializeField] private int _reloadSpeed;
         #endregion
 
         #region Unity Callbacks

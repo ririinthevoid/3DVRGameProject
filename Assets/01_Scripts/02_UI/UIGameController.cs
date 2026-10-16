@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 using Deforestation.Inventory;
 using UnityEngine.UI;
-using Unity.VisualScripting;
+using UnityEngine.Audio;
 namespace Deforestation.UI
 {
 
@@ -43,6 +43,7 @@ namespace Deforestation.UI
 		[SerializeField] private Slider _masterVolume;
 		[SerializeField] private Slider _ambientVolume;
 		[SerializeField] private Slider _sfxVolume;
+		[SerializeField] private AudioMixer _audioMixer;
         #endregion
 
         #region Unity Callbacks
@@ -51,6 +52,10 @@ namespace Deforestation.UI
 		{
             _playerInventory.OnInventoryUpdated += UpdateInventoryUI;
             IsPaused = true;
+
+			_masterVolume.onValueChanged.AddListener(MasterVolumeChanged);
+            _ambientVolume.onValueChanged.AddListener(AmbientVolumeChanged);
+            _sfxVolume.onValueChanged.AddListener(SfxVolumeChanged);
         }
 
 		[System.Obsolete]
@@ -59,7 +64,7 @@ namespace Deforestation.UI
             _pauseUI.SetActive(IsPaused);
 			_activeUI.SetActive(!IsPaused);
 
-			if (!IsPaused && (Input.GetKeyUp(KeyCode.Escape) && !GameController.Instance.MachineController.IsDriving) || Input.GetKeyUp(KeyCode.P))
+			if (Input.GetKeyUp(KeyCode.P))
 			{
 				IsPaused = !IsPaused;
 			}
@@ -138,6 +143,21 @@ namespace Deforestation.UI
 				_copperText.text = "0";
 		}
 
+
+		private void MasterVolumeChanged(float value)
+		{
+			_audioMixer.SetFloat("MasterVol", Mathf.Log10(value) * 20);
+        }
+
+		private void AmbientVolumeChanged(float value)
+		{
+			_audioMixer.SetFloat("AmbientVol", Mathf.Log10(value) * 20);
+        }
+
+        private void SfxVolumeChanged(float value)
+		{
+			_audioMixer.SetFloat("SFXVol", Mathf.Log10(value) * 20);
+        }
         #endregion
     }
 }
