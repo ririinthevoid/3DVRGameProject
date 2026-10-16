@@ -13,22 +13,27 @@ namespace Deforestation.Machine.Weapon
         #endregion
 
         #region Unity Callbacks
+        private void Start()
+        {
+            Destroy(gameObject, 5f);
+        }
         private void OnTriggerEnter(Collider other)
         {
-            HealthSystem health = GetComponent<HealthSystem>();
+            HealthSystem health = other.GetComponent<HealthSystem>();
             if (health != null)
             {
                 health.OnDamaged(_damage);
             }
-            Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
-            Destroy(gameObject, 1);
+            var explosion = Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
+            Destroy(explosion.gameObject, 3);
+            Destroy(gameObject, 5);
             GetComponent<Collider>().enabled = false;
         }
 
         private void Update()
         {
-            transform.Translate(transform.forward * -1 * _flySpeed * Time.deltaTime, Space.Self);
+            transform.position += transform.forward * _flySpeed * Time.deltaTime;
         }
         #endregion
-    }
+        }
 }

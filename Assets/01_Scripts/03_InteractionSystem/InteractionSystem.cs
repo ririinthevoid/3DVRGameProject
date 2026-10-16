@@ -1,5 +1,6 @@
 using Deforestation.Inventory;
 using Deforestation.UI;
+using StarterAssets;
 using UnityEngine;
 namespace Deforestation.Interaction
 {
@@ -12,25 +13,36 @@ namespace Deforestation.Interaction
 		#region Fields
 		[SerializeField] UIGameController _uiController;
 		[SerializeField] PlayerInventory _inventory;
+        private ThirdPersonController _player;
         [SerializeField] bool _interactableDetected = false;
         IInteractable _currentInteraction;
 
         #endregion
 
         #region Unity Callbacks
+        private void Awake()
+        {
+            _player = GetComponent<ThirdPersonController>();
+        }
+
         [System.Obsolete]
         private void Update()
-        {
-            if(_interactableDetected & Input.GetKeyUp(KeyCode.E))
+		{
+            _player.enabled = !GameController.Instance.UIGameController.IsPaused;
+
+            if (!GameController.Instance.UIGameController.IsPaused)
 			{
-				if(_currentInteraction is Recolectables recolectables)
-				{
-                    _inventory.AddRecolectable(recolectables.MineralType, recolectables.MineralValue);
-					recolectables.Interact();
-                }
-				if(_currentInteraction is MachineInteraction machineInteraction)
-				{
-                    machineInteraction.Interact();
+                if (_interactableDetected & Input.GetKeyUp(KeyCode.E))
+                {
+                    if (_currentInteraction is Recolectables recolectables)
+                    {
+                        _inventory.AddRecolectable(recolectables.MineralType, recolectables.MineralValue);
+                        recolectables.Interact();
+                    }
+                    if (_currentInteraction is MachineInteraction machineInteraction)
+                    {
+                        machineInteraction.Interact();
+                    }
                 }
             }
         }

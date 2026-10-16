@@ -1,10 +1,15 @@
+using System;
 using UnityEngine;
 namespace Deforestation.Machine.Weapon
 {
     public class WeaponController : MonoBehaviour
     {
-    	#region Fields
-    	[SerializeField] private Transform _turretTransform;
+        #region Properties
+        public event Action OnWeaponShot;
+        #endregion
+
+        #region Fields
+        [SerializeField] private Transform _turretTransform;
     	[SerializeField] private Transform _spawnPoinLeft;
     	[SerializeField] private Transform _spawnPoinRight;
     	[SerializeField] private float  _rotationSpd;
@@ -40,20 +45,21 @@ namespace Deforestation.Machine.Weapon
 
                 if (Input.GetMouseButtonUp(0))
                 {
+                    OnWeaponShot?.Invoke();
                     transform.LookAt(hit.point);
                     if (_shootSide == 0)
                     {
                         _smokeLeft.SetActive(true);
                         _smokeRight.SetActive(false);
                         _shootSide = 1;
-                        Instantiate(_bulletPrefab, _spawnPoinLeft.transform.position, _spawnPoinLeft.transform.rotation);
+                        Instantiate(_bulletPrefab,_spawnPoinLeft.position,_spawnPoinLeft.rotation);
                     }
                     else if (_shootSide == 1)
                     {
                         _smokeLeft.SetActive(false);
                         _smokeRight.SetActive(true);
                         _shootSide = 0;
-                        Instantiate(_bulletPrefab, _spawnPoinRight.transform.position, _spawnPoinRight.transform.rotation);
+                        Instantiate(_bulletPrefab,_spawnPoinRight.position,_spawnPoinRight.rotation);
                     }
                 }
             }

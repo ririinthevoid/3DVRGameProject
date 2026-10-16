@@ -1,23 +1,28 @@
 using UnityEngine;
 using TMPro;
 using Deforestation.Inventory;
-using Deforestation.Interaction;
 using UnityEngine.UI;
-
+using Unity.VisualScripting;
 namespace Deforestation.UI
 {
 
 	public class UIGameController : MonoBehaviour
 	{
-		#region Properties
-		#endregion
+        #region Properties
+		public bool IsPaused;
+        #endregion
 
-		#region Fields
-		[Header("Controllers")]
+        #region Fields
+        [Header("Controllers")]
         [System.Obsolete]
 		private PlayerInventory _playerInventory => GameController.Instance.PlayerInventory;
-        [System.Obsolete]
-        private InteractionSystem _interactionSystem => GameController.Instance.InteractionSystem;
+		
+		[Header("Pause")]
+		[SerializeField] private GameObject _pauseUI;
+		[SerializeField] private GameObject _activeUI;
+		[SerializeField] private Button _startButton;
+		[SerializeField] private Button _audioSettingButton;
+		[SerializeField] private Button _gameExitButton;
 
         [Header("ResourceUI")]
         [SerializeField] private TextMeshProUGUI _ironText;
@@ -28,24 +33,54 @@ namespace Deforestation.UI
 		[SerializeField] private Slider _playerHealth;
 		[SerializeField] private Slider _machineHealth;
 
-        [Header("OtherUI")]
+        [Header("InteractionUI")]
         [SerializeField] private UIInteractionPannel _interactionPanel;
+
+		[Header("AudioUI")]
+		[SerializeField] private GameObject _audioUIPanel;
+		private bool _audioUIOpen;
+		[SerializeField] private Button _closeAudioUIButton;
+		[SerializeField] private Slider _masterVolume;
+		[SerializeField] private Slider _ambientVolume;
+		[SerializeField] private Slider _sfxVolume;
         #endregion
 
         #region Unity Callbacks
+        [System.Obsolete]
         void Start()
 		{
-			_playerInventory.OnInventoryUpdated += UpdateInventoryUI;
-		}
+            _playerInventory.OnInventoryUpdated += UpdateInventoryUI;
+            IsPaused = true;
+        }
 
+		[System.Obsolete]
 		void Update()
-		{
+        {
+            _pauseUI.SetActive(IsPaused);
+			_activeUI.SetActive(!IsPaused);
 
+			if (!IsPaused && (Input.GetKeyUp(KeyCode.Escape) && !GameController.Instance.MachineController.IsDriving) || Input.GetKeyUp(KeyCode.P))
+			{
+				IsPaused = !IsPaused;
+			}
+
+			if(IsPaused || GameController.Instance.Machine)
+			{
+				Cursor.lockState = CursorLockMode.None;
+				Cursor.visible = true;
+			}
+
+			if(!IsPaused && !GameController.Instance.Machine)
+			{
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
 		}
         #endregion
 
         #region Public Methods
-        public  void ShowInteraction(string message)
+        #region Interaction
+        public void ShowInteraction(string message)
         {
 			_interactionPanel.Show(message);
         }
@@ -55,6 +90,9 @@ namespace Deforestation.UI
             _interactionPanel.Hide();
         }
 
+        #endregion
+
+        #region Health
 		public void UpdatePlayerHealth(float value)
 		{
             _playerHealth.value = value;
@@ -64,9 +102,24 @@ namespace Deforestation.UI
 		{
             _machineHealth.value = value;
         }
+
+        #endregion
+
+        #region GameState
+        public void StartGame()
+        {
+            IsPaused = false;
+        }
+
+		public void ExitGame()
+		{
+			Application.Quit();
+		}
+        #endregion
         #endregion
 
         #region Private Methods
+        [System.Obsolete]
         private void UpdateInventoryUI()
 		{
 			if (_playerInventory.InventoryCount.ContainsKey(RecolectableType.Iron))
@@ -84,6 +137,7 @@ namespace Deforestation.UI
 			else
 				_copperText.text = "0";
 		}
+
         #endregion
     }
 }

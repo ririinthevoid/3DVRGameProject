@@ -1,5 +1,3 @@
-using Deforestation;
-using System.Collections.Generic;
 using UnityEngine;
 namespace Deforestation.Machine.Weapon
 {
@@ -14,15 +12,12 @@ namespace Deforestation.Machine.Weapon
 		[SerializeField] private float _explosionForce;
 		[SerializeField] private float _maxDamage;
 		[SerializeField] private float _torqueForce;
-
-		[SerializeField] private GameObject _treePrefab;
 		#endregion
 
 		#region Unity Callbacks
 		void Start()
 		{
 			Explode();
-			Destroy(gameObject, 2.5f);
 		}
 
 		void Update()
@@ -32,20 +27,20 @@ namespace Deforestation.Machine.Weapon
 		#endregion
 
 		#region Public Methods
+		[System.Obsolete]
 		public void Explode()
 		{
-            Terrain terrain = Terrain.activeTerrain;
-            TreeInstance[] trees = terrain.terrainData.treeInstances;
+			TreeInstance[] _trees = GameController.Instance.TerrainManager.Trees;
+            GameObject _treePrefab = GameController.Instance.TerrainManager.TreePrefab;
 
-            for (int i = 0; i < trees.Length; ++i)
+            for (int i = 0; i < _trees.Length; ++i)
             {
-                TreeInstance tree = trees[i];
-                Vector3 treeWorldPoss = TreeToWorldPosition(tree, terrain);
+                TreeInstance tree = _trees[i];
+                Vector3 treeWorldPoss = GameController.Instance.TerrainManager.TreeToWorldPosition(tree);
 
                 if (Vector3.Distance(transform.position, treeWorldPoss) <= _blastRadius)
                 {
-                    Instantiate(_treePrefab, treeWorldPoss, Quaternion.identity);
-                    RemoveTreeFromTerrain(i, terrain);
+					GameController.Instance.TerrainManager.DestroyTree(i, treeWorldPoss);
                 }
             }
 
@@ -73,17 +68,7 @@ namespace Deforestation.Machine.Weapon
 		#endregion
 
 		#region Private Methods
-		private Vector3 TreeToWorldPosition(TreeInstance tree, Terrain terrain)
-		{
-			return Vector3.Scale(tree.position, terrain.terrainData.size + terrain.transform.position);
-		}
-
-		private void RemoveTreeFromTerrain(int index,Terrain terrain)
-		{
-			List<TreeInstance> trees = new List<TreeInstance>(terrain.terrainData.treeInstances);
-			trees.RemoveAt(index);
-			terrain.terrainData.treeInstances = trees.ToArray();
-		}
+		
         #endregion
     }
 }

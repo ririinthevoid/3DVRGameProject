@@ -6,15 +6,16 @@ TagManager:
   tags:
   - CinemachineTarget
   - Mineral
+  - Tree
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Terrain
   - Water
   - UI
-  - 
-  - 
+  - Rocks
+  - Player
   - 
   - 
   - 
