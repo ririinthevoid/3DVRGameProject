@@ -10,6 +10,7 @@ namespace Deforestation.UI
 	{
         #region Properties
 		public bool IsPaused;
+		public bool IsGameOver;
         #endregion
 
         #region Fields
@@ -44,6 +45,15 @@ namespace Deforestation.UI
 		[SerializeField] private Slider _ambientVolume;
 		[SerializeField] private Slider _sfxVolume;
 		[SerializeField] private AudioMixer _audioMixer;
+
+		[Header("AmmoUI")]
+		[SerializeField] private TextMeshProUGUI _ammoDisplay;
+		[SerializeField] private int _currentAmmo;
+		[SerializeField] private int _maxAmmo;
+
+		[Header("GameOver")]
+		[SerializeField] private GameObject _gameOverUI;
+		[SerializeField] private Button _quitGame;
         #endregion
 
         #region Unity Callbacks
@@ -70,6 +80,12 @@ namespace Deforestation.UI
 			}
 
 			if(IsPaused || GameController.Instance.Machine)
+			{
+				Cursor.lockState = CursorLockMode.None;
+				Cursor.visible = true;
+			}
+
+			if(IsGameOver || GameController.Instance.Machine)
 			{
 				Cursor.lockState = CursorLockMode.None;
 				Cursor.visible = true;
@@ -120,6 +136,27 @@ namespace Deforestation.UI
 		{
 			Application.Quit();
 		}
+
+		public void GameOver()
+		{
+			IsPaused = false;
+            IsGameOver = true;
+            _gameOverUI.SetActive(true);
+		}
+        #endregion
+
+        #region Ammo UI
+		public void AmmoReloaded(int ammo)
+		{
+			_currentAmmo = ammo;
+            _ammoDisplay.text = "Ammo: " + _currentAmmo + "/" + _maxAmmo;
+		}
+
+		public void MaxAmmoUpgraded(int ammount)
+		{
+			_maxAmmo += ammount;
+			_ammoDisplay.text = "Ammo: " + _currentAmmo + "/" + _maxAmmo;
+		}
         #endregion
         #endregion
 
@@ -143,8 +180,8 @@ namespace Deforestation.UI
 				_copperText.text = "0";
 		}
 
-
-		private void MasterVolumeChanged(float value)
+        #region Volumes
+        private void MasterVolumeChanged(float value)
 		{
 			_audioMixer.SetFloat("MasterVol", Mathf.Log10(value) * 20);
         }
@@ -158,6 +195,7 @@ namespace Deforestation.UI
 		{
 			_audioMixer.SetFloat("SFXVol", Mathf.Log10(value) * 20);
         }
+        #endregion
         #endregion
     }
 }

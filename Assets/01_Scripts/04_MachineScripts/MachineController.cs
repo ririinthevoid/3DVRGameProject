@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 namespace Deforestation.Machine
 {
@@ -11,7 +12,8 @@ namespace Deforestation.Machine
         public HealthSystem HealthSystem => _healthSystem;
         public MachineMovement MachineMovement => _machineMovement;
         public Action<bool> OnMachineDriveChange;
-
+        public int RegenAmount;
+        public bool Cooldown;
         #endregion
 
         #region Fields
@@ -20,6 +22,9 @@ namespace Deforestation.Machine
         private Animator _anim;
 
         [SerializeField] private bool _isDriving;
+        private bool _machineRegen;
+        private bool _machineDOT;
+
         #endregion
 
         #region Unity Callbacks
@@ -37,10 +42,24 @@ namespace Deforestation.Machine
 		[System.Obsolete]
         void Update()
         {
-            if (Input.GetKeyUp(KeyCode.Escape))
+            if (Input.GetKeyUp(KeyCode.Escape) && _isDriving)
             {
                 StopDriving();
-            _isDriving = false;
+                _isDriving = false;
+            }
+
+            if(!_machineRegen)
+            StartCoroutine(HealthRegen(RegenAmount));
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            if(other.gameObject.CompareTag("Water"))
+            {
+                if(!_machineDOT)
+                {
+                    StartCoroutine(DOT());
+                }
             }
         }
         #endregion
@@ -60,11 +79,42 @@ namespace Deforestation.Machine
         public void StopDriving()
         {
             GameController.Instance.MachineMode(false);
+            _isDriving = false;
             _machineMovement.enabled = false;
             _anim.SetBool("Move", false);
             OnMachineDriveChange?.Invoke(false);
-
-            #endregion
+            StartCoroutine(DriveCooldown());
         }
+
+        public void HealthRegenUpdated(int amount)
+        {
+            RegenAmount = amount;
+        }
+        #endregion
+
+        #region Private Methods
+        private IEnumerator HealthRegen (int amount)
+        {
+            _machineRegen = true;
+            _healthSystem.OnHealed(amount);
+            yield return new WaitForSeconds(5);
+            _machineRegen = false;
+        }
+
+        private IEnumerator DOT()
+        {
+            _machineDOT = true;
+            _healthSystem.OnDamaged(25);
+            yield return new WaitForSeconds(1);
+            _machineDOT = false;
+        }
+
+        private IEnumerator DriveCooldown()
+        {
+            Cooldown = true;
+            yield return new WaitForSeconds(3);
+            Cooldown = false;
+        }
+        #endregion
     }
 }

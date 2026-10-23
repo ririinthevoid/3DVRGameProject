@@ -52,9 +52,13 @@ namespace Deforestation.Interaction
             {
                 GameController.Instance.PlayerTeleport(_target.position);
             }
-            if (_type == MachineInteractionType.Machine)
+            if (_type == MachineInteractionType.Machine && !GameController.Instance.MachineController.Cooldown)
             {
                 GameController.Instance.MachineMode(true);
+            }
+            else
+            {
+                Debug.LogWarning("Drive is on cooldown");
             }
         }
         #endregion

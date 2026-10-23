@@ -23,12 +23,11 @@ namespace Deforestation.Dinosaurs
         [System.Obsolete]
 		void Update()
 		{
-            if(!GameController.Instance.UIGameController.IsPaused)
+            if(!GameController.Instance.UIGameController.IsPaused && !GameController.Instance.UIGameController.IsGameOver)
             {
                 if (_animator.GetBool("flee") == false)
                 {
                     StartCoroutine(IdleLoop());
-                    Debug.Log("Stego Fleeing");
                 }
 
                 if (_agent.pathPending)

@@ -7,27 +7,28 @@ namespace Deforestation
 		#region Properties
 		public event Action<float> OnHealthChanged;
 		public event Action OnDeath;
+		public float CurrentHealth;
 		#endregion
 
 		#region Fields
 		[SerializeField] float maxHealth;
-		[SerializeField] float currentHealth;
 		#endregion
 
 		#region Unity Callbacks
 		void Awake()
 		{
-			currentHealth = maxHealth;
+			CurrentHealth = maxHealth;
 		}
 		#endregion
 
 		#region Public Methods
 		public void OnDamaged(float damage)
 		{
-			currentHealth -= damage;
-			OnHealthChanged?.Invoke(currentHealth);
+			Debug.Log("Damaged " + gameObject.name + " for: " + damage);
+			CurrentHealth -= damage;
+            OnHealthChanged?.Invoke(CurrentHealth);
 
-			if (currentHealth < 0)
+			if (CurrentHealth < 0)
 			{
 				Death();
 			}
@@ -35,9 +36,10 @@ namespace Deforestation
 
 		public void OnHealed(float heal)
 		{
-			currentHealth += heal;
-			currentHealth = Mathf.Min(currentHealth, maxHealth);
-			OnHealthChanged?.Invoke(currentHealth);
+			Debug.Log("Healed " + gameObject.name + " for: " + heal);
+			CurrentHealth += heal;
+			CurrentHealth = Mathf.Min(CurrentHealth, maxHealth);
+			OnHealthChanged?.Invoke(CurrentHealth);
 		}
 		#endregion
 

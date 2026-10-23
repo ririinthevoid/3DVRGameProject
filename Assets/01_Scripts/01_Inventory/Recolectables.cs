@@ -5,9 +5,9 @@ namespace Deforestation.Inventory
 {
     public enum RecolectableType
     {
-        Iron,
         Tin,
         Copper,
+        Iron,
     }
 
     public class Recolectables : MonoBehaviour, IInteractable

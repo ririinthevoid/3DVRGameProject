@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 namespace Deforestation.Machine.Weapon
 {
@@ -6,6 +7,7 @@ namespace Deforestation.Machine.Weapon
     {
         #region Properties
         public event Action OnWeaponShot;
+        public event Action<int> OnAmmoReloaded;
         #endregion
 
         #region Fields
@@ -24,7 +26,8 @@ namespace Deforestation.Machine.Weapon
         [Header("Ammo Managing")]
         [SerializeField] private int _maxAmmo;
         [SerializeField] private int _currentAmmo;
-        [SerializeField] private int _reloadSpeed;
+        [SerializeField] private float _reloadSpeed;
+        private bool _reloading;
         #endregion
 
         #region Unity Callbacks
@@ -36,7 +39,7 @@ namespace Deforestation.Machine.Weapon
         [System.Obsolete]
         void Update()
         {
-            if (GameController.Instance.MachineController.IsDriving)
+            if (GameController.Instance.MachineController.IsDriving && !GameController.Instance.UIGameController.IsPaused && !GameController.Instance.UIGameController.IsGameOver)
             {
                 Ray ray = GameController.Instance.MachineCamera.GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
@@ -50,8 +53,9 @@ namespace Deforestation.Machine.Weapon
                     _turretTransform.rotation = Quaternion.Slerp(transform.rotation, rotation, _rotationSpd * Time.deltaTime);
                 }
 
-                if (Input.GetMouseButtonUp(0))
+                if (Input.GetMouseButtonUp(0) && _currentAmmo > 0)
                 {
+                    _currentAmmo--;
                     OnWeaponShot?.Invoke();
                     transform.LookAt(hit.point);
                     if (_shootSide == 0)
@@ -70,7 +74,37 @@ namespace Deforestation.Machine.Weapon
                     }
                 }
             }
+
+            if(_currentAmmo < _maxAmmo & !_reloading)
+            {
+                StartCoroutine(AmmoReloading(_reloadSpeed));
+            }
         }
-    	#endregion
+        #endregion
+
+        #region Public Methods
+        public void ReloadSpeedUpgraded(float reloadSpeed)
+        {
+            if (!_reloading)
+            {
+                _reloadSpeed = reloadSpeed;
+            }
+        }
+        public void MaxAmmoUpgraded(int maxAmmo)
+        {
+            _maxAmmo = maxAmmo;
+        }
+        #endregion
+
+        #region Private Methods
+        private IEnumerator AmmoReloading(float speed)
+        {
+            _reloading = true;
+            yield return new WaitForSeconds(speed);
+            _currentAmmo += 1;
+            OnAmmoReloaded?.Invoke(_currentAmmo);
+            _reloading = false;
+        }
+        #endregion
     }
 }

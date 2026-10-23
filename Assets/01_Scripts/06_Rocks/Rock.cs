@@ -40,7 +40,9 @@ namespace Deforestation.Enviroment
 
 			for (int i = 0; i < SpawnCount; i++)
 			{
-				Instantiate(_pebblePrefabs[Random.Range(0, _pebblePrefabs.Length +1)], RandomPosition(), Random.rotation);
+				var drop = Instantiate(_pebblePrefabs[Random.Range(0, _pebblePrefabs.Length +1)], RandomPosition(), Random.rotation);
+				Debug.Log(drop.name);
+				drop = null;
 			}
 		}
 

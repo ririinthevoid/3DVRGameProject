@@ -23,17 +23,17 @@ namespace Deforestation.Machine
         [System.Obsolete]
 		void Update()
         {
-			if(!GameController.Instance.UIGameController.IsPaused)
+			if(!GameController.Instance.UIGameController.IsPaused && !GameController.Instance.UIGameController.IsGameOver)
 			{
                 _movementDirection = new Vector3(Input.GetAxis("Vertical") * 2, 0, 0);
                 transform.Rotate(Vector3.up * _speedRotation * Time.deltaTime * Input.GetAxis("Horizontal"));
             }
-		}
+        }
 
-		void FixedUpdate()
+        void FixedUpdate()
 		{
 			_rb.AddRelativeForce(_movementDirection.normalized * _speedForce, ForceMode.Impulse);
-		}
+        }
 
         [System.Obsolete]
         private void OnTriggerEnter(Collider other)
@@ -44,12 +44,6 @@ namespace Deforestation.Machine
 				GameController.Instance.TerrainManager.DestroyTree(index, other.transform.position);
 			}
         }
-        #endregion
-
-        #region Public Methods
-        #endregion
-
-        #region Private Methods
         #endregion
     }
 }

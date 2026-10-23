@@ -136,7 +136,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Deforestation.Inventory.Recolectables
   <MineralValue>k__BackingField: 1
-  <MineralType>k__BackingField: 2
+  <MineralType>k__BackingField: 1
   _interactableInfo:
     Action: Pick Up
     Type: Copper

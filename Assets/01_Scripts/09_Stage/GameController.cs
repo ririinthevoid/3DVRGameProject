@@ -3,6 +3,7 @@ using Deforestation.Inventory;
 using Deforestation.Machine;
 using Deforestation.Machine.Weapon;
 using Deforestation.UI;
+using StarterAssets;
 using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -31,6 +32,7 @@ namespace Deforestation
         [SerializeField] private CinemachineInputAxisController _cameraPanAxis;
         [SerializeField] private PlayerInventory _playerInventory;
         [SerializeField] private InteractionSystem _interactionSystem;
+        [SerializeField] private ThirdPersonController _thirdPersonController;
 
         [Header("Machine")]
         [SerializeField] private MachineController _machineController;
@@ -38,9 +40,12 @@ namespace Deforestation
         [SerializeField] private GameObject _machineCamera;
         [SerializeField] private WeaponController _weaponController;
         [SerializeField] private Transform _exitPosition;
+        [SerializeField] private UpgradeManager _upgradeManager;
+        [SerializeField] private MachineMovement _machineMovement;
 
         [Header("Terrain")]
         [SerializeField] private TerrainManager _terrainManager;
+        [SerializeField] private Water _water;
 
         [Header("UI")]
         [SerializeField] private UIGameController _uiGameController;
@@ -56,12 +61,36 @@ namespace Deforestation
         {
             _playerHealth.OnHealthChanged += _uiGameController.UpdatePlayerHealth;
             _machineHealth.OnHealthChanged += _uiGameController.UpdateMachineHealth;
+
+            _weaponController.OnAmmoReloaded += _uiGameController.AmmoReloaded;
+
+            _upgradeManager.OnMaxAmmoUpgraded += _weaponController.MaxAmmoUpgraded;
+            _upgradeManager.OnMaxAmmoUpgraded += _uiGameController.MaxAmmoUpgraded;
+            _upgradeManager.OnHealthRegenUpgraded += _machineController.HealthRegenUpdated;
+
+            _upgradeManager.OnReloadSpeedUpgraded += _weaponController.ReloadSpeedUpgraded;
+
+            _weaponController.OnAmmoReloaded += _uiGameController.AmmoReloaded;
+
+            _water.PlayerDrown += PlayerDrowned;
+
+            _machineHealth.OnDeath += _uiGameController.GameOver;
+            _playerHealth.OnDeath += _uiGameController.GameOver;
         }
 
         void Update()
         {
-            _cameraPanAxis.enabled = !_uiGameController.IsPaused;
-
+            //Movement Controller Activations
+            if(_uiGameController.IsPaused || _uiGameController.IsGameOver)
+            {
+                _cameraPanAxis.enabled = false;
+                _thirdPersonController.enabled = false;
+            }
+            if(!_uiGameController.IsPaused && !_uiGameController.IsGameOver)
+            {
+                _cameraPanAxis.enabled = true;
+                _thirdPersonController.enabled = true;
+            }
         }
         #endregion
 
@@ -107,6 +136,11 @@ namespace Deforestation
 
             _machineController.StartDriving(false);
             _uiGameController.HideInteraction();
+        }
+
+        private void PlayerDrowned()
+        {
+            _playerHealth.OnDamaged(250);
         }
         #endregion
     }

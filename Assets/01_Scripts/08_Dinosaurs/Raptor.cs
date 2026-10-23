@@ -29,30 +29,26 @@ namespace Deforestation.Dinosaurs
         [System.Obsolete]
         void Update()
         {
-            if (!GameController.Instance.UIGameController.IsPaused)
+            if (!GameController.Instance.UIGameController.IsPaused && !GameController.Instance.UIGameController.IsGameOver)
             {
                 if (Vector3.Distance(transform.position, _playerPosition) < _detectionRadius && !_chase && !_attack)
                 {
                     ChaseMachine();
-                    Debug.Log("Raptor Chasing");
                 }
 
                 if (Vector3.Distance(transform.position, _playerPosition) > _detectionRadius && _chase || _attack)
                 {
                     Idle();
-                    Debug.Log("Raptor Idle");
                 }
 
                 if (Vector3.Distance(transform.position, _playerPosition) < _attackRadius && _chase)
                 {
                     AttackMachine();
-                    Debug.Log("Raptor Attacking");
                 }
 
                 if (Vector3.Distance(transform.position, _playerPosition) > _attackRadius && _attack)
                 {
                     ChaseMachine();
-                    Debug.Log("Raptor Chasing");
                 }
 
                 if (_attack)
