@@ -1,34 +1,34 @@
 Concept
  We’re a resource collection company’s worker who got assigned an island with dinosaurs
-===
+
 Genre:
  FPC for the player
  TPC for the robot
  Resource management
  Progress via upgrades
-===
+
 Plataform:
  PC
  VR
-===
+
 Target:
  Companies
-===
+
 Mechanics:
  Movement FPC and FPC (Jump included in player)
  Shooting rocks, collect resources.
  Machine Self Upgrades
  Swap POV/Control
-===
+
 Style:
  3D Semi-realistic
-===
+
 Sounds:
  Ambient Sounds
   https://freesound.org/people/kevp888/sounds/857847/
  Machine Sounds
   https://assetstore.unity.com/packages/audio/sound-fx/ui-mechanical-free-sample-pack-148704
-===
+
 Systems:
  FPC
   Default POV of player. 
@@ -40,7 +40,7 @@ Systems:
   Every 5 Tin minerals machine gains 1 Extra max ammo up to 25
   Every 10 Iron minerals the machine gains a 5% Reload speed increase up to 50%
   Every 10 Copper minerals the machine gains 5 extra HP points per 5 seconds
-===
+
  UI
   Active UI
     Interaction Menu
@@ -56,10 +56,10 @@ Systems:
     Sound Settings Button
     Extra UI Pop-Up will appear where Master, Ambient and SFX sounds volume can be lowered
     Exit Game Button
-===
+
 Weapon
 https://assetstore.unity.com/packages/3d/characters/scifi-simple-gun-turret-set-62750
-===
+
 Enviroment
  Base Island
   https://assetstore.unity.com/packages/3d/environments/landscapes/free-island-collection-104753?srsltid=AfmBOorKgHOS8wyS1J65xJ7CIjac8cjZtW3J3ArtXqNUUD6Y8FDPrwhQ
