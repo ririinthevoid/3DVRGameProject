@@ -67646,6 +67646,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1675850167771531846, guid: 1db83251f2828df459c64a857daef537, type: 3}
+      propertyPath: _speedForce
+      value: 125000
+      objectReference: {fileID: 0}
     - target: {fileID: 2792253061775115743, guid: 1db83251f2828df459c64a857daef537, type: 3}
       propertyPath: m_Name
       value: TheMachine
@@ -67691,8 +67695,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4419207324406895086, guid: 1db83251f2828df459c64a857daef537, type: 3}
+      propertyPath: m_Mass
+      value: 250000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4419207324406895086, guid: 1db83251f2828df459c64a857daef537, type: 3}
+      propertyPath: m_ImplicitCom
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4419207324406895086, guid: 1db83251f2828df459c64a857daef537, type: 3}
       propertyPath: m_AngularDamping
-      value: 3
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4419207324406895086, guid: 1db83251f2828df459c64a857daef537, type: 3}
+      propertyPath: m_CenterOfMass.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
