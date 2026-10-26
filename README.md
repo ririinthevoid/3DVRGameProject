@@ -9,12 +9,10 @@ TPC for the robot
 Resource management
 Progress via upgrades
 ---
-## Plataforma
-
+## Plataform:
 PC/VR
 ---
-## Target
-
+## Target:
 Companies
 ---
 ## Mechanics
